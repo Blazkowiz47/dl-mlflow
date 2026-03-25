@@ -7,7 +7,11 @@ dependencies. It is the public MLflow variant behind `dl-core[mlflow]`.
 
 ## Install
 
-Install from PyPI:
+Current public validation releases are published on TestPyPI. Once the package
+is promoted to PyPI, the same install forms below will work against the main
+index.
+
+PyPI install target:
 
 ```bash
 pip install "dl-core[mlflow]"
