@@ -1,32 +1,32 @@
-# dl-mlflow
+# deep-learning-mlflow
 
-Local MLflow integration layer for `dl-core`.
+Local MLflow integration layer for `deep-learning-core`.
 
-`dl-mlflow` adds local MLflow tracking on top of `dl-core` without Azure
-dependencies. It is the public MLflow variant behind `dl-core[mlflow]`.
+`deep-learning-mlflow` adds local MLflow tracking on top of
+`deep-learning-core` without Azure dependencies. It is the public MLflow
+variant behind `deep-learning-core[mlflow]`.
 
 ## Install
 
-Current public validation releases are published on TestPyPI. Once the package
-is promoted to PyPI, the same install forms below will work against the main
-index.
+The package is now available on PyPI under the `deep-learning-mlflow` name.
+TestPyPI remains available for validation flows.
 
 PyPI install target:
 
 ```bash
-pip install "dl-core[mlflow]"
+pip install "deep-learning-core[mlflow]"
 ```
 
 Install the package directly:
 
 ```bash
-pip install dl-mlflow
+pip install deep-learning-mlflow
 ```
 
 Install in a `uv` project:
 
 ```bash
-uv add "dl-core[mlflow]" dl-mlflow
+uv add "deep-learning-core[mlflow]" deep-learning-mlflow
 ```
 
 ## Quick Start
