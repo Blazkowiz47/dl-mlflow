@@ -18,6 +18,12 @@ dev = [
     "pytest",
 ]
 
+[project.urls]
+Homepage = "https://github.com/Blazkowiz47/dl-mlflow"
+Documentation = "https://github.com/Blazkowiz47/dl-mlflow/tree/main/readme"
+Repository = "https://github.com/Blazkowiz47/dl-mlflow"
+Issues = "https://github.com/Blazkowiz47/dl-mlflow/issues"
+
 [project.entry-points."dl_core.init_extensions"]
 mlflow = "dl_mlflow.init_extension:MlflowInitExtension"
 

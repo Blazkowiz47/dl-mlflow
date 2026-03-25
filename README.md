@@ -2,12 +2,24 @@
 
 Local MLflow integration layer for `dl-core`.
 
-`dl-mlflow` adds:
-- an MLflow callback for local training runs
-- `dl-init-experiment --with-mlflow` scaffold wiring
-- the `dl-core[mlflow]` install path
+`dl-mlflow` adds local MLflow tracking on top of `dl-core` without Azure
+dependencies. It is the public MLflow variant behind `dl-core[mlflow]`.
 
 ## Install
+
+Install from PyPI:
+
+```bash
+pip install "dl-core[mlflow]"
+```
+
+Install the package directly:
+
+```bash
+pip install dl-mlflow
+```
+
+Install in a `uv` project:
 
 ```bash
 uv add "dl-core[mlflow]" dl-mlflow
@@ -22,9 +34,21 @@ uv run dl-run --config configs/base.yaml
 
 The scaffold points MLflow at a local `./mlruns` directory by default.
 
+## What You Get
+
+- the `mlflow` callback for local training runs
+- `dl-init-experiment --with-mlflow` scaffold support
+- local `./mlruns` tracking defaults for generated experiment repositories
+
+Azure-backed MLflow wiring remains part of `dl-azure`.
+
+## Companion Packages
+
+- [`dl-core`](https://github.com/Blazkowiz47/dl-core)
+- [`dl-azure`](https://github.com/Blazkowiz47/dl-azure)
+- [`dl-wandb`](https://github.com/Blazkowiz47/dl-wandb)
+
 ## Docs
 
-- [Overview](./readme/README.md)
-- [TLDR: Install And Enable](./readme/tldr/1_install_and_enable.md)
-- [Guide: Wiring MLflow](./readme/guide/1_wiring_mlflow_into_an_experiment_repo.md)
-- [Technical: Callback And Scaffold](./readme/technical/1_callback_and_scaffold.md)
+- [Documentation Index](https://github.com/Blazkowiz47/dl-mlflow/tree/main/readme)
+- [GitHub Repository](https://github.com/Blazkowiz47/dl-mlflow)
