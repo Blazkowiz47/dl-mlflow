@@ -115,6 +115,27 @@ class MlflowCallback(Callback):
         experiment = trainer_config.get("experiment", {})
         return self.experiment_name or experiment.get("name") or "default"
 
+    def _resolve_tracking_uri(self) -> str:
+        """Return the MLflow tracking URI for the current training run."""
+        trainer_config = getattr(self.trainer, "config", {})
+        tracking = trainer_config.get("tracking", {})
+        return (
+            self.tracking_uri
+            or tracking.get("tracking_uri")
+            or tracking.get("uri")
+            or "./mlruns"
+        )
+
+    def _resolve_parent_run_id(self) -> str | None:
+        """Return the parent MLflow run id when sweep nesting is enabled."""
+        trainer_config = getattr(self.trainer, "config", {})
+        tracking = trainer_config.get("tracking", {})
+        return (
+            self.parent_run_id
+            or tracking.get("parent_run_id")
+            or tracking.get("context")
+        )
+
     def _resolve_run_name(self) -> str | None:
         """Return the MLflow run name for the current training run."""
 
@@ -185,11 +206,12 @@ class MlflowCallback(Callback):
         if self.run is not None:
             return
 
-        mlflow.set_tracking_uri(self.tracking_uri)
+        mlflow.set_tracking_uri(self._resolve_tracking_uri())
         mlflow.set_experiment(self._resolve_experiment_name())
 
-        if self.parent_run_id:
-            self.parent_run = mlflow.start_run(run_id=self.parent_run_id)
+        parent_run_id = self._resolve_parent_run_id()
+        if parent_run_id:
+            self.parent_run = mlflow.start_run(run_id=parent_run_id)
             self.run = mlflow.start_run(
                 run_name=self._resolve_run_name(),
                 nested=True,
