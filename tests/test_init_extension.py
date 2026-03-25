@@ -30,7 +30,7 @@ def test_mlflow_init_extension_updates_scaffold_files(tmp_path: Path) -> None:
             Path("pyproject.toml"): (
                 "[project]\n"
                 "dependencies = [\n"
-                '    "dl-core",\n'
+                '    "deep-learning-core",\n'
                 "]\n"
             ),
             Path("README.md"): "# demo\n",
@@ -53,8 +53,8 @@ def test_mlflow_init_extension_updates_scaffold_files(tmp_path: Path) -> None:
 
     MlflowInitExtension().apply(context)
 
-    assert '"dl-core[mlflow]"' in context.get_file("pyproject.toml")
-    assert '"dl-mlflow"' in context.get_file("pyproject.toml")
+    assert '"deep-learning-core[mlflow]"' in context.get_file("pyproject.toml")
+    assert '"deep-learning-mlflow"' in context.get_file("pyproject.toml")
     assert "import dl_mlflow" in context.get_file(Path("src") / "bootstrap.py")
     assert "backend: mlflow" in context.get_file(
         Path("configs") / "base_sweep.yaml"

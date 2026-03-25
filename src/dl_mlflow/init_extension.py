@@ -59,10 +59,10 @@ class MlflowInitExtension(InitExtension):
 
         context.replace_in_file(
             "pyproject.toml",
-            '"dl-core"',
-            '"dl-core[mlflow]"',
+            '"deep-learning-core"',
+            '"deep-learning-core[mlflow]"',
         )
-        context.add_dependency("dl-mlflow")
+        context.add_dependency("deep-learning-mlflow")
         context.append_bootstrap_import("import dl_mlflow  # noqa: F401")
         context.append_readme_note(
             "Local MLflow support is enabled. Review the `callbacks.mlflow` "

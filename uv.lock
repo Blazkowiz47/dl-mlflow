@@ -646,8 +646,8 @@ wheels = [
 ]
 
 [[package]]
-name = "dl-core"
-version = "1.0.0"
+name = "deep-learning-core"
+version = "0.0.1"
 source = { editable = "../dl-core" }
 dependencies = [
     { name = "albumentations" },
@@ -666,9 +666,9 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "albumentations" },
-    { name = "dl-azure", marker = "extra == 'azure'", editable = "../dl-azure" },
-    { name = "dl-mlflow", marker = "extra == 'mlflow'", editable = "." },
-    { name = "dl-wandb", marker = "extra == 'wandb'", editable = "../dl-wandb" },
+    { name = "deep-learning-azure", marker = "extra == 'azure'", editable = "../dl-azure" },
+    { name = "deep-learning-mlflow", marker = "extra == 'mlflow'", editable = "." },
+    { name = "deep-learning-wandb", marker = "extra == 'wandb'", editable = "../dl-wandb" },
     { name = "numpy" },
     { name = "opencv-python" },
     { name = "psutil" },
@@ -682,11 +682,11 @@ requires-dist = [
 provides-extras = ["azure", "mlflow", "wandb", "dev"]
 
 [[package]]
-name = "dl-mlflow"
-version = "1.0.0"
+name = "deep-learning-mlflow"
+version = "0.0.1"
 source = { editable = "." }
 dependencies = [
-    { name = "dl-core" },
+    { name = "deep-learning-core" },
     { name = "mlflow" },
 ]
 
@@ -697,7 +697,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dl-core", editable = "../dl-core" },
+    { name = "deep-learning-core", editable = "../dl-core" },
     { name = "mlflow" },
     { name = "pytest", marker = "extra == 'dev'" },
 ]
