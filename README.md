@@ -52,3 +52,7 @@ Azure-backed MLflow wiring remains part of `dl-azure`.
 
 - [Documentation Index](https://github.com/Blazkowiz47/dl-mlflow/tree/main/readme)
 - [GitHub Repository](https://github.com/Blazkowiz47/dl-mlflow)
+
+## License
+
+MIT. See [LICENSE](LICENSE).
