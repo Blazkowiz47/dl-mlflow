@@ -44,8 +44,9 @@ def test_mlflow_init_extension_updates_scaffold_files(tmp_path: Path) -> None:
             ),
             Path("configs") / "base_sweep.yaml": (
                 "tracking:\n"
-                "  group: my_experiment\n"
+                "  group: demo\n"
                 '  run_name_template: "lr_{optimizers.lr}"\n'
+                '  description_template: "learning_rate={optimizers.lr}"\n'
             ),
         },
         enabled_extensions={"mlflow"},
@@ -59,4 +60,5 @@ def test_mlflow_init_extension_updates_scaffold_files(tmp_path: Path) -> None:
     assert "backend: mlflow" in context.get_file(
         Path("configs") / "base_sweep.yaml"
     )
+    assert "group: demo" in context.get_file(Path("configs") / "base_sweep.yaml")
     assert "callbacks:" in context.get_file(Path("configs") / "base.yaml")

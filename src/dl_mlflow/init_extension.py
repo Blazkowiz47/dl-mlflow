@@ -23,11 +23,25 @@ def _mlflow_callback_block() -> str:
 def _mlflow_tracking_fields() -> str:
     """Render local MLflow-specific additions to the sweep tracking block."""
 
-    return """tracking:
-  backend: mlflow
+    return """  backend: mlflow
   tracking_uri: ./mlruns
-  group: my_experiment
 """
+
+
+def _inject_mlflow_tracking_fields(content: str) -> str:
+    """Inject MLflow-specific tracking fields into the sweep scaffold."""
+
+    if "tracking:\n" not in content:
+        return content
+
+    if "tracking:\n  backend: mlflow\n" in content:
+        return content
+
+    return content.replace(
+        "tracking:\n",
+        f"tracking:\n{_mlflow_tracking_fields()}",
+        1,
+    )
 
 
 class MlflowInitExtension(InitExtension):
@@ -76,6 +90,8 @@ class MlflowInitExtension(InitExtension):
         )
         context.replace_in_file(
             Path("configs") / "base_sweep.yaml",
-            "tracking:\n  group: my_experiment\n",
-            _mlflow_tracking_fields(),
+            context.get_file(Path("configs") / "base_sweep.yaml"),
+            _inject_mlflow_tracking_fields(
+                context.get_file(Path("configs") / "base_sweep.yaml")
+            ),
         )
