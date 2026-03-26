@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from types import SimpleNamespace
 
 from pytest import MonkeyPatch
 
 import dl_mlflow
 from dl_core.core import METRICS_SOURCE_REGISTRY, TRACKER_REGISTRY
+from dl_mlflow.trackers.mlflow import MlflowTracker
 from dl_mlflow.callbacks.mlflow import MlflowCallback
 
 
@@ -84,3 +86,93 @@ def test_mlflow_callback_uses_tracking_config_for_uri_and_parent(
     assert ("experiment", "demo-experiment") in events
     assert ("start", "parent-run-123") in events
     assert ("start", "demo-run") in events
+
+
+def test_mlflow_tracker_setup_sweep_creates_parent_run(
+    monkeypatch: MonkeyPatch,
+) -> None:
+    """The tracker should create one parent MLflow run for the sweep."""
+    events: list[tuple[str, str]] = []
+
+    def fake_set_tracking_uri(uri: str) -> None:
+        events.append(("uri", uri))
+
+    def fake_set_experiment(name: str) -> None:
+        events.append(("experiment", name))
+
+    def fake_start_run(run_name: str | None = None):
+        events.append(("start", run_name or ""))
+        return SimpleNamespace(info=SimpleNamespace(run_id="parent-run-001"))
+
+    monkeypatch.setattr(
+        "dl_mlflow.trackers.mlflow.mlflow",
+        SimpleNamespace(
+            set_tracking_uri=fake_set_tracking_uri,
+            set_experiment=fake_set_experiment,
+            start_run=fake_start_run,
+            end_run=lambda: events.append(("end", "parent")),
+        ),
+    )
+
+    tracker = MlflowTracker({"tracking_uri": "./demo-mlruns"})
+    tracker_state = tracker.setup_sweep(
+        experiment_name="demo-experiment",
+        sweep_id="sweep-001",
+        sweep_config={"tracking": {}},
+        total_runs=2,
+    )
+    tracker.teardown_sweep()
+
+    assert tracker_state == {
+        "tracking_context": "parent-run-001",
+        "tracking_uri": "./demo-mlruns",
+    }
+    assert ("uri", "./demo-mlruns") in events
+    assert ("experiment", "demo-experiment") in events
+    assert ("start", "demo-experiment-sweep-001") in events
+    assert ("end", "parent") in events
+
+
+def test_mlflow_metrics_source_prefers_remote_metrics(monkeypatch: MonkeyPatch) -> None:
+    """The MLflow metrics source should use remote metrics when a run ref exists."""
+    source = METRICS_SOURCE_REGISTRY.get("mlflow")
+
+    monkeypatch.setattr(
+        "dl_mlflow.metrics_sources.mlflow.mlflow",
+        SimpleNamespace(
+            tracking=SimpleNamespace(
+                MlflowClient=lambda tracking_uri: SimpleNamespace(
+                    get_run=lambda run_id: SimpleNamespace(
+                        info=SimpleNamespace(status="FINISHED"),
+                        data=SimpleNamespace(
+                            metrics={"validation/accuracy": 0.97},
+                            tags={"mlflow.runName": "demo-run"},
+                        ),
+                    )
+                )
+            )
+        ),
+    )
+
+    run_record = source.collect_run(
+        run_index=0,
+        run_data={
+            "tracking_run_id": "child-run-123",
+            "tracking_run_name": "demo-run",
+            "tracking_backend": "mlflow",
+            "metrics_source_backend": "mlflow",
+            "tracking_run_ref": {
+                "backend": "mlflow",
+                "run_id": "child-run-123",
+                "tracking_uri": "./demo-mlruns",
+            },
+            "status": "running",
+            "config_path": str(Path("config.yaml")),
+        },
+        sweep_data={"tracking_backend": "mlflow"},
+    )
+
+    assert run_record["remote_summary_available"] is True
+    assert run_record["selection_value"] is None
+    assert run_record["final_metrics"]["validation/accuracy"] == 0.97
+    assert run_record["status"] == "completed"
