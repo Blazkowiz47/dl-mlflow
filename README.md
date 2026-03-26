@@ -32,11 +32,22 @@ uv add "deep-learning-core[mlflow]" deep-learning-mlflow
 ## Quick Start
 
 ```bash
+uv init
+uv add deep-learning-mlflow
 uv run dl-init-experiment --root-dir . --with-mlflow
 uv run dl-run --config configs/base.yaml
+uv run dl-sweep --sweep experiments/lr_sweep.yaml
 ```
 
 The scaffold points MLflow at a local `./mlruns` directory by default.
+
+Concrete local tracking flow:
+
+```bash
+uv run dl-init-experiment --root-dir . --with-mlflow
+uv run dl-run --config configs/base.yaml
+uv run dl-analyze-sweep --sweep experiments/lr_sweep.yaml
+```
 
 ## What You Get
 
