@@ -88,6 +88,51 @@ def test_mlflow_callback_uses_tracking_config_for_uri_and_parent(
     assert ("start", "demo-run") in events
 
 
+def test_mlflow_callback_prefers_tracking_values_over_callback_defaults(
+    monkeypatch: MonkeyPatch,
+) -> None:
+    """The callback should use injected sweep tracking values as canonical."""
+    events: list[tuple[str, str | None]] = []
+
+    def fake_set_tracking_uri(uri: str) -> None:
+        events.append(("uri", uri))
+
+    def fake_set_experiment(name: str) -> None:
+        events.append(("experiment", name))
+
+    def fake_start_run(
+        run_id: str | None = None,
+        run_name: str | None = None,
+        nested: bool = False,
+    ):
+        del nested
+        events.append(("start", run_id or run_name))
+        return SimpleNamespace(info=SimpleNamespace(run_id="child-run-456"))
+
+    monkeypatch.setattr(
+        "dl_mlflow.callbacks.mlflow.mlflow",
+        SimpleNamespace(
+            set_tracking_uri=fake_set_tracking_uri,
+            set_experiment=fake_set_experiment,
+            start_run=fake_start_run,
+            log_params=lambda *_args, **_kwargs: None,
+            log_artifact=lambda *_args, **_kwargs: None,
+            end_run=lambda: None,
+        ),
+    )
+
+    callback = MlflowCallback(
+        experiment_name="stale-experiment",
+        run_name="stale-run",
+        tracking_uri="",
+    )
+    callback.set_trainer(_DummyTrainer())
+    callback.on_training_start()
+
+    assert ("experiment", "demo-experiment") in events
+    assert ("start", "demo-run") in events
+
+
 def test_mlflow_tracker_setup_sweep_creates_parent_run(
     monkeypatch: MonkeyPatch,
 ) -> None:

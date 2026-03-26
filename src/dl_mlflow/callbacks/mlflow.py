@@ -112,8 +112,14 @@ class MlflowCallback(Callback):
         """Return the MLflow experiment name for the current training run."""
 
         trainer_config = getattr(self.trainer, "config", {})
+        tracking = trainer_config.get("tracking", {})
         experiment = trainer_config.get("experiment", {})
-        return self.experiment_name or experiment.get("name") or "default"
+        return (
+            tracking.get("experiment_name")
+            or experiment.get("name")
+            or self.experiment_name
+            or "default"
+        )
 
     def _resolve_tracking_uri(self) -> str:
         """Return the MLflow tracking URI for the current training run."""
@@ -142,7 +148,7 @@ class MlflowCallback(Callback):
         trainer_config = getattr(self.trainer, "config", {})
         runtime = trainer_config.get("runtime", {})
         tracking = trainer_config.get("tracking", {})
-        return self.run_name or tracking.get("run_name") or runtime.get("name")
+        return tracking.get("run_name") or runtime.get("name") or self.run_name
 
     def _log_params(self) -> None:
         """Log flattened trainer config into MLflow parameters."""
