@@ -8,4 +8,4 @@ import dl_mlflow
 def test_package_import_exposes_version() -> None:
     """The package root should import successfully and expose a version."""
 
-    assert dl_mlflow.__version__ == "0.0.1"
+    assert dl_mlflow.__version__ == "0.0.2"
