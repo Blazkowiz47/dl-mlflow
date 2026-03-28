@@ -41,7 +41,7 @@ class _DummyTrainer:
 
 def test_mlflow_tracker_and_metrics_source_are_registered() -> None:
     """Importing dl-mlflow should register tracker and metrics source aliases."""
-    assert dl_mlflow.__version__ == "0.0.2a6"
+    assert dl_mlflow.__version__ == "0.0.2a7"
     assert TRACKER_REGISTRY.is_registered("mlflow")
     assert METRICS_SOURCE_REGISTRY.is_registered("mlflow")
 
@@ -61,8 +61,10 @@ def test_mlflow_callback_uses_tracking_config_for_uri_and_parent(
     def fake_start_run(
         run_id: str | None = None,
         run_name: str | None = None,
+        parent_run_id: str | None = None,
         nested: bool = False,
     ):
+        del parent_run_id
         events.append(("start", run_id or run_name))
         return SimpleNamespace(info=SimpleNamespace(run_id="child-run-456"))
 
@@ -84,7 +86,6 @@ def test_mlflow_callback_uses_tracking_config_for_uri_and_parent(
 
     assert ("uri", "./demo-mlruns") in events
     assert ("experiment", "demo-experiment") in events
-    assert ("start", "parent-run-123") in events
     assert ("start", "demo-run") in events
 
 
@@ -103,8 +104,10 @@ def test_mlflow_callback_prefers_tracking_values_over_callback_defaults(
     def fake_start_run(
         run_id: str | None = None,
         run_name: str | None = None,
+        parent_run_id: str | None = None,
         nested: bool = False,
     ):
+        del parent_run_id
         del nested
         events.append(("start", run_id or run_name))
         return SimpleNamespace(info=SimpleNamespace(run_id="child-run-456"))

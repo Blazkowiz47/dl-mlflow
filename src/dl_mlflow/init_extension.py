@@ -13,7 +13,6 @@ def _mlflow_callback_block() -> str:
 
     return """
   mlflow:
-    experiment_name: null
     run_name: null
     tracking_uri: ./mlruns
     log_config: true

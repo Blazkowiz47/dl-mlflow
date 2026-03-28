@@ -40,6 +40,8 @@ uv run dl-sweep --sweep experiments/lr_sweep.yaml
 ```
 
 The scaffold points MLflow at a local `./mlruns` directory by default.
+Tracker experiment naming defaults to the repository root name unless
+`tracking.experiment_name` overrides it.
 
 Concrete local tracking flow:
 

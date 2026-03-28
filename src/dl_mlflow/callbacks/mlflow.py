@@ -249,10 +249,9 @@ class MlflowCallback(Callback):
 
         parent_run_id = self._resolve_parent_run_id()
         if parent_run_id:
-            self.parent_run = mlflow.start_run(run_id=parent_run_id)
             self.run = mlflow.start_run(
                 run_name=self._resolve_run_name(),
-                nested=True,
+                parent_run_id=parent_run_id,
             )
         else:
             self.run = mlflow.start_run(run_name=self._resolve_run_name())
