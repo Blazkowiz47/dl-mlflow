@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import mlflow
@@ -54,10 +55,16 @@ class MlflowTracker(BaseTracker):
                 "tracking_uri": resolved_tracking_uri,
             }
 
-        group_name = self.tracking_config.get("group") or f"{experiment_name}-{sweep_id}"
+        sweep_file = sweep_config.get("sweep_file")
+        derived_sweep_name = Path(str(sweep_file)).stem if sweep_file else ""
+        sweep_name = (
+            self.tracking_config.get("sweep_name")
+            or derived_sweep_name
+            or f"{experiment_name}-{sweep_id}"
+        )
         mlflow.set_tracking_uri(resolved_tracking_uri)
         mlflow.set_experiment(experiment_name)
-        self.parent_run = mlflow.start_run(run_name=str(group_name))
+        self.parent_run = mlflow.start_run(run_name=str(sweep_name))
         return {
             "tracking_context": self.parent_run.info.run_id,
             "tracking_uri": resolved_tracking_uri,
