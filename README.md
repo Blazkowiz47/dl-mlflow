@@ -39,6 +39,8 @@ uv run dl-sweep experiments/lr_sweep.yaml
 The scaffold points MLflow at a local `./mlruns` directory by default.
 Tracker experiment naming defaults to the repository root name unless
 `tracking.experiment_name` overrides it.
+Run artifacts are uploaded from `config.yaml`, per-epoch `epoch_<n>/`
+directories after checkpointing, and `final/` at the end of training.
 
 Concrete local tracking flow:
 
@@ -53,6 +55,7 @@ uv run dl-analyze --sweep experiments/lr_sweep.yaml
 - the `mlflow` callback for local training runs
 - `dl-init-experiment --with-mlflow` scaffold support
 - local `./mlruns` tracking defaults for generated experiment repositories
+- automatic upload of `epoch_<n>/`, `final/`, and `config.yaml` artifacts
 
 Azure-backed MLflow wiring remains part of `dl-azure`.
 

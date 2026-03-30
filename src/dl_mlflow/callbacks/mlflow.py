@@ -180,24 +180,22 @@ class MlflowCallback(Callback):
         except Exception as exc:
             self.logger.warning(f"Failed to upload artifact {path.name}: {exc}")
 
-    def _log_default_artifacts(self) -> None:
-        """Upload the standard dl-core artifact files to MLflow."""
+    def _log_directory_if_exists(
+        self,
+        path: Path,
+        artifact_path: str | None,
+    ) -> None:
+        """Upload one artifact directory if it exists on disk."""
 
-        artifact_manager = getattr(self.trainer, "artifact_manager", None)
-        if artifact_manager is None:
+        if not path.exists() or not path.is_dir():
             return
 
-        run_dir = Path(artifact_manager.run_dir)
-        self._log_artifact_if_exists(run_dir / "config.yaml", None)
-        self._log_artifact_if_exists(run_dir / "run_info.json", None)
-        self._log_artifact_if_exists(
-            run_dir / "metrics" / "summary.json",
-            "metrics",
-        )
-        self._log_artifact_if_exists(
-            run_dir / "metrics" / "history.json",
-            "metrics",
-        )
+        try:
+            mlflow.log_artifacts(str(path), artifact_path=artifact_path)
+        except Exception as exc:
+            self.logger.warning(
+                f"Failed to upload artifact directory {path.name}: {exc}"
+            )
 
     def _write_run_id_file(self) -> None:
         """Persist the active run id for sweep bookkeeping when requested."""
@@ -260,7 +258,6 @@ class MlflowCallback(Callback):
         self._write_tracking_session(tracking_uri)
         if self.log_config:
             self._log_params()
-        self._log_default_artifacts()
 
     def on_epoch_end(self, epoch: int, logs: dict[str, Any] | None = None) -> None:
         """Log non-phase epoch metrics to MLflow."""
@@ -324,7 +321,11 @@ class MlflowCallback(Callback):
         if self.run is None:
             return
 
-        self._log_default_artifacts()
+        artifact_manager = getattr(self.trainer, "artifact_manager", None)
+        if artifact_manager is not None:
+            run_dir = Path(artifact_manager.run_dir)
+            self._log_directory_if_exists(run_dir / "final", "final")
+            self._log_artifact_if_exists(run_dir / "config.yaml", None)
         try:
             mlflow.end_run()
         finally:
@@ -334,3 +335,18 @@ class MlflowCallback(Callback):
                     mlflow.end_run()
                 finally:
                     self.parent_run = None
+
+    def on_checkpoint(self, epoch: int, metrics: dict[str, Any]) -> None:
+        """Upload the epoch artifact directory after checkpointing completes."""
+        super().on_checkpoint(epoch, metrics)
+        if not self.is_main_process():
+            return
+        if self.run is None:
+            return
+
+        artifact_manager = getattr(self.trainer, "artifact_manager", None)
+        if artifact_manager is None:
+            return
+
+        epoch_dir = Path(artifact_manager.get_epoch_dir(epoch))
+        self._log_directory_if_exists(epoch_dir, epoch_dir.name)
