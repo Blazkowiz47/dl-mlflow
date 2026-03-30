@@ -313,9 +313,18 @@ class MlflowCallback(Callback):
             self.logger.warning(f"Failed to log MLflow metrics: {exc}")
 
     def on_training_end(self, logs: dict[str, Any] | None = None) -> None:
-        """Finalize the active MLflow run at the end of training."""
+        """Handle end-of-training bookkeeping before trainer finalization."""
 
         super().on_training_end(logs)
+        if not self.is_main_process():
+            return
+        if self.run is None:
+            return
+
+    def on_training_finalized(self, logs: dict[str, Any] | None = None) -> None:
+        """Upload final artifacts after trainer finalization and close the run."""
+
+        super().on_training_finalized(logs)
         if not self.is_main_process():
             return
         if self.run is None:
