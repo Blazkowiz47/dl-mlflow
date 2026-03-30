@@ -31,7 +31,7 @@ uv add "deep-learning-core[mlflow]" deep-learning-mlflow
 ```bash
 uv init
 uv add deep-learning-mlflow
-uv run dl-init-experiment --root-dir . --with-mlflow
+uv run dl-init --root-dir . --with-mlflow
 uv run dl-run --config configs/base.yaml
 uv run dl-sweep experiments/lr_sweep.yaml
 ```
@@ -45,7 +45,7 @@ directories after checkpointing, and `final/` at the end of training.
 Concrete local tracking flow:
 
 ```bash
-uv run dl-init-experiment --root-dir . --with-mlflow
+uv run dl-init --root-dir . --with-mlflow
 uv run dl-run --config configs/base.yaml
 uv run dl-analyze --sweep experiments/lr_sweep.yaml
 ```
@@ -53,7 +53,7 @@ uv run dl-analyze --sweep experiments/lr_sweep.yaml
 ## What You Get
 
 - the `mlflow` callback for local training runs
-- `dl-init-experiment --with-mlflow` scaffold support
+- `dl-init --with-mlflow` scaffold support
 - local `./mlruns` tracking defaults for generated experiment repositories
 - automatic upload of `epoch_<n>/`, `final/`, and `config.yaml` artifacts
 

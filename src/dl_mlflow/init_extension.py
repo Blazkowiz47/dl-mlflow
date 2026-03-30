@@ -1,4 +1,4 @@
-"""MLflow scaffold extension for dl-init-experiment."""
+"""MLflow scaffold extension for dl-init."""
 
 from __future__ import annotations
 
