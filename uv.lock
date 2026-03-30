@@ -647,7 +647,7 @@ wheels = [
 
 [[package]]
 name = "deep-learning-core"
-version = "0.0.5"
+version = "0.0.6"
 source = { editable = "../dl-core" }
 dependencies = [
     { name = "albumentations" },
@@ -683,7 +683,7 @@ provides-extras = ["azure", "mlflow", "wandb", "dev"]
 
 [[package]]
 name = "deep-learning-mlflow"
-version = "0.0.5"
+version = "0.0.6"
 source = { editable = "." }
 dependencies = [
     { name = "deep-learning-core" },
