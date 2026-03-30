@@ -8,10 +8,7 @@ variant behind `deep-learning-core[mlflow]`.
 
 ## Install
 
-The package is now available on PyPI under the `deep-learning-mlflow` name.
-TestPyPI remains available for validation flows.
-
-PyPI install target:
+Install from PyPI through the core extra:
 
 ```bash
 pip install "deep-learning-core[mlflow]"
