@@ -9,6 +9,7 @@ import mlflow
 import torch
 
 from dl_core.core.base_callback import Callback
+from dl_core.core.config_metadata import config_field
 from dl_core.core.registry import register_callback
 
 
@@ -89,6 +90,45 @@ def _qualify_phase_metrics(
 @register_callback("mlflow")
 class MlflowCallback(Callback):
     """Log local training metadata and metrics to MLflow."""
+
+    CONFIG_FIELDS = Callback.CONFIG_FIELDS + [
+        config_field(
+            "experiment_name",
+            "str | None",
+            "Optional MLflow experiment override for this training run.",
+            default=None,
+        ),
+        config_field(
+            "run_name",
+            "str | None",
+            "Optional MLflow child run name override.",
+            default=None,
+        ),
+        config_field(
+            "tracking_uri",
+            "str",
+            "MLflow tracking URI used for the run.",
+            default="./mlruns",
+        ),
+        config_field(
+            "parent_run_id",
+            "str | None",
+            "Parent MLflow run id used for sweep nesting.",
+            default=None,
+        ),
+        config_field(
+            "run_id_file",
+            "str | None",
+            "Optional file path where the active MLflow run id is written.",
+            default=None,
+        ),
+        config_field(
+            "log_config",
+            "bool",
+            "Log the flattened trainer config as MLflow params.",
+            default=True,
+        ),
+    ]
 
     def __init__(
         self,

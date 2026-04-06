@@ -7,12 +7,27 @@ from typing import Any
 
 import mlflow
 
-from dl_core.core import BaseTracker, register_tracker
+from dl_core.core import BaseTracker, config_field, register_tracker
 
 
 @register_tracker("mlflow")
 class MlflowTracker(BaseTracker):
     """Tracker metadata adapter for local MLflow-backed runs."""
+
+    CONFIG_FIELDS = BaseTracker.CONFIG_FIELDS + [
+        config_field(
+            "tracking_uri",
+            "str",
+            "MLflow tracking URI used for the sweep parent run.",
+            default="./mlruns",
+        ),
+        config_field(
+            "sweep_name",
+            "str | None",
+            "Optional MLflow parent run name for the sweep.",
+            default=None,
+        ),
+    ]
 
     def __init__(self, tracking_config: dict[str, Any] | None = None, **kwargs: Any):
         """Initialize tracker state for MLflow-backed sweeps."""
