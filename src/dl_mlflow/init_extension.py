@@ -48,13 +48,26 @@ class MlflowInitExtension(InitExtension):
 
     name = "mlflow"
 
+    def display_name(self) -> str:
+        """Return the prompt label for MLflow support."""
+        return "MLflow"
+
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
         """Register the local MLflow scaffold flag."""
-
-        parser.add_argument(
+        group = parser.add_mutually_exclusive_group()
+        group.add_argument(
             "--with-mlflow",
+            dest="with_mlflow",
             action="store_true",
+            default=None,
             help="Include local MLflow callback wiring and tracking defaults.",
+        )
+        group.add_argument(
+            "--without-mlflow",
+            dest="with_mlflow",
+            action="store_false",
+            default=None,
+            help="Exclude local MLflow scaffold wiring even when dl-mlflow is installed.",
         )
 
     def is_enabled(
@@ -65,7 +78,7 @@ class MlflowInitExtension(InitExtension):
         """Enable MLflow wiring when explicitly requested."""
 
         del discovered_extensions
-        return bool(getattr(args, "with_mlflow", False))
+        return self.selection_state(args) is True
 
     def apply(self, context: ScaffoldContext) -> None:
         """Apply local MLflow-specific scaffold mutations."""
