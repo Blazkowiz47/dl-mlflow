@@ -6,6 +6,9 @@ Local MLflow integration layer for `deep-learning-core`.
 `deep-learning-core` without Azure dependencies. It is the public MLflow
 variant behind `deep-learning-core[mlflow]`.
 
+Current release: `deep-learning-mlflow==0.0.10`.
+Requires `deep-learning-core>=0.0.24,<0.1`.
+
 ## Install
 
 Install from PyPI through the core extra:
