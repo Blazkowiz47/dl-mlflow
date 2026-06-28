@@ -77,16 +77,6 @@ def _flatten_dict(
     return dict(items)
 
 
-def _qualify_phase_metrics(
-    scalars: dict[str, float],
-    phase: str | None,
-) -> dict[str, float]:
-    """Return phase-qualified scalars for phase hooks."""
-    if phase is None:
-        return scalars
-    return {f"{phase}/{key}": value for key, value in scalars.items()}
-
-
 @register_callback("mlflow")
 class MlflowCallback(Callback):
     """Log local training metadata and metrics to MLflow."""
@@ -337,12 +327,16 @@ class MlflowCallback(Callback):
             return
 
         scalars = _extract_scalars(logs)
-        scalars = _qualify_phase_metrics(scalars, phase)
         if phase is None:
             scalars = {
                 key: value
                 for key, value in scalars.items()
                 if not key.startswith(("train/", "validation/", "test/"))
+            }
+        else:
+            scalars = {
+                f"{phase}/{key}": value
+                for key, value in scalars.items()
             }
         if not scalars:
             return

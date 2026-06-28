@@ -19,14 +19,6 @@ def _mlflow_callback_block() -> str:
 """
 
 
-def _mlflow_tracking_fields() -> str:
-    """Render local MLflow-specific additions to the sweep tracking block."""
-
-    return """  backend: mlflow
-  tracking_uri: ./mlruns
-"""
-
-
 def _inject_mlflow_tracking_fields(content: str) -> str:
     """Inject MLflow-specific tracking fields into the sweep scaffold."""
 
@@ -38,7 +30,7 @@ def _inject_mlflow_tracking_fields(content: str) -> str:
 
     return content.replace(
         "tracking:\n",
-        f"tracking:\n{_mlflow_tracking_fields()}",
+        "tracking:\n  backend: mlflow\n  tracking_uri: ./mlruns\n",
         1,
     )
 
