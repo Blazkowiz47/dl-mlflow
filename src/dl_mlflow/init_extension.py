@@ -8,6 +8,22 @@ from pathlib import Path
 from dl_core.init_extensions import InitExtension, ScaffoldContext
 
 
+def _append_gitignore_patterns(
+    context: ScaffoldContext,
+    *patterns: str,
+) -> None:
+    """Append MLflow runtime outputs to the generated project gitignore."""
+    relative = Path(".gitignore")
+    content = context.files.get(relative, "")
+    existing_lines = set(content.splitlines())
+    missing = [pattern for pattern in patterns if pattern not in existing_lines]
+    if not missing:
+        return
+    prefix = content.rstrip()
+    suffix = "\n".join(missing)
+    context.set_file(relative, f"{prefix}\n{suffix}\n" if prefix else f"{suffix}\n")
+
+
 def _mlflow_callback_block() -> str:
     """Render the scaffold callback block for local MLflow logging."""
 
@@ -75,12 +91,8 @@ class MlflowInitExtension(InitExtension):
     def apply(self, context: ScaffoldContext) -> None:
         """Apply local MLflow-specific scaffold mutations."""
 
-        context.replace_in_file(
-            "pyproject.toml",
-            '"deep-learning-core"',
-            '"deep-learning-core[mlflow]"',
-        )
         context.add_dependency("deep-learning-mlflow")
+        _append_gitignore_patterns(context, "mlruns/")
         context.append_bootstrap_import("import dl_mlflow  # noqa: F401")
         context.append_readme_note(
             "Local MLflow support is enabled. Review the `callbacks.mlflow` "

@@ -26,7 +26,7 @@ pip install deep-learning-mlflow
 Install in a `uv` project:
 
 ```bash
-uv add "deep-learning-core[mlflow]" deep-learning-mlflow
+uv add "deep-learning-core[mlflow]"
 ```
 
 ## Quick Start
@@ -40,6 +40,8 @@ uv run dl-sweep experiments/lr_sweep.yaml
 ```
 
 The scaffold points MLflow at a local `./mlruns` directory by default.
+Generated repositories ignore `mlruns/` so local tracking data is not
+accidentally committed.
 Tracker experiment naming defaults to the repository root name unless
 `tracking.experiment_name` overrides it.
 Run artifacts are uploaded from `config.yaml`, per-epoch `epoch_<n>/`

@@ -57,8 +57,11 @@ def test_mlflow_init_extension_updates_scaffold_files(tmp_path: Path) -> None:
 
     MlflowInitExtension().apply(context)
 
-    assert '"deep-learning-core[mlflow]"' in context.get_file("pyproject.toml")
-    assert '"deep-learning-mlflow"' in context.get_file("pyproject.toml")
+    pyproject_text = context.get_file("pyproject.toml")
+    assert '"deep-learning-core"' in pyproject_text
+    assert '"deep-learning-core[mlflow]"' not in pyproject_text
+    assert '"deep-learning-mlflow"' in pyproject_text
+    assert "mlruns/" in context.get_file(".gitignore")
     assert "import dl_mlflow" in context.get_file(Path("src") / "bootstrap.py")
     assert "backend: mlflow" in context.get_file(
         Path("configs") / "base_sweep.yaml"
