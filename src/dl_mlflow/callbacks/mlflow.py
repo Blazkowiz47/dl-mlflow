@@ -96,9 +96,9 @@ class MlflowCallback(Callback):
         ),
         config_field(
             "tracking_uri",
-            "str",
-            "MLflow tracking URI used for the run.",
-            default="./mlruns",
+            "str | None",
+            "Optional callback-level MLflow tracking URI fallback.",
+            default=None,
         ),
         config_field(
             "parent_run_id",
@@ -124,7 +124,7 @@ class MlflowCallback(Callback):
         self,
         experiment_name: str | None = None,
         run_name: str | None = None,
-        tracking_uri: str = "./mlruns",
+        tracking_uri: str | None = None,
         parent_run_id: str | None = None,
         run_id_file: str | None = None,
         log_config: bool = True,
@@ -166,9 +166,9 @@ class MlflowCallback(Callback):
         trainer_config = getattr(self.trainer, "config", {})
         tracking = trainer_config.get("tracking", {})
         return (
-            self.tracking_uri
-            or tracking.get("tracking_uri")
+            tracking.get("tracking_uri")
             or tracking.get("uri")
+            or self.tracking_uri
             or "./mlruns"
         )
 

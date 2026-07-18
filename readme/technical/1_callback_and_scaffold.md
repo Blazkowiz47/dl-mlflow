@@ -8,3 +8,7 @@
 
 The callback writes to a local `tracking_uri` by default and supports
 `parent_run_id` for nested sweep runs.
+
+Sweep-injected `tracking.tracking_uri` or `tracking.uri` is canonical for a
+child run. A callback-level `tracking_uri` is used only as a fallback, followed
+by the local `./mlruns` default.

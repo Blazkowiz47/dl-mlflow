@@ -80,7 +80,7 @@ def test_mlflow_callback_uses_tracking_config_for_uri_and_parent(
         ),
     )
 
-    callback = MlflowCallback(tracking_uri="")
+    callback = MlflowCallback()
     callback.set_trainer(_DummyTrainer())
     callback.on_training_start()
 
@@ -127,12 +127,13 @@ def test_mlflow_callback_prefers_tracking_values_over_callback_defaults(
     callback = MlflowCallback(
         experiment_name="stale-experiment",
         run_name="stale-run",
-        tracking_uri="",
+        tracking_uri="./stale-mlruns",
     )
     callback.set_trainer(_DummyTrainer())
     callback.on_training_start()
 
     assert ("experiment", "demo-experiment") in events
+    assert ("uri", "./demo-mlruns") in events
     assert ("start", "demo-run") in events
 
 
@@ -157,7 +158,7 @@ def test_mlflow_callback_logs_phase_metrics_with_epoch_steps(
         ),
     )
 
-    callback = MlflowCallback(tracking_uri="")
+    callback = MlflowCallback()
     callback.set_trainer(_DummyTrainer())
     callback.on_training_start()
     callback.on_test_end(0, {"accuracy": 0.61})
