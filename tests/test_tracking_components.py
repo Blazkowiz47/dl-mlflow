@@ -173,6 +173,10 @@ def test_mlflow_callback_logs_phase_metrics_with_epoch_steps(
         },
     )
     callback.on_episode_end(2, {"episode/return": 4.5, "global_step": 20})
+    callback.on_episode_end(
+        200,
+        {"phase": "evaluation", "episode/return": 99.0, "global_step": 20},
+    )
     callback.on_update_end(3, {"sac/critic_loss": 0.2, "global_step": 21})
     callback.on_evaluation_end(
         21,

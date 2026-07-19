@@ -326,6 +326,8 @@ class MlflowCallback(Callback):
         episode: int,
         logs: dict[str, Any] | None = None,
     ) -> None:
+        if logs and logs.get("phase") == "evaluation":
+            return
         step = int(logs.get("global_step", episode)) if logs else episode
         self._log_metrics(step, logs)
 
