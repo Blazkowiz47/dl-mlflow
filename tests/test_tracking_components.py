@@ -172,12 +172,21 @@ def test_mlflow_callback_logs_phase_metrics_with_epoch_steps(
             "general/state/global_step": 32.0,
         },
     )
+    callback.on_episode_end(2, {"episode/return": 4.5, "global_step": 20})
+    callback.on_update_end(3, {"sac/critic_loss": 0.2, "global_step": 21})
+    callback.on_evaluation_end(
+        21,
+        {"evaluation/mean_return": 5.0, "global_step": 21},
+    )
 
     assert metric_events == [
         ({"test/accuracy": 0.61}, 0),
         ({"train/loss": 0.5}, 1),
         ({"validation/accuracy": 0.75}, 1),
         ({"general/state/global_step": 32.0}, 1),
+        ({"episode/return": 4.5, "global_step": 20.0}, 20),
+        ({"sac/critic_loss": 0.2, "global_step": 21.0}, 21),
+        ({"evaluation/mean_return": 5.0, "global_step": 21.0}, 21),
     ]
 
 

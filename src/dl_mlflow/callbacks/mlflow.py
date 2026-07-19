@@ -313,6 +313,53 @@ class MlflowCallback(Callback):
         super().on_test_end(epoch, logs)
         self._log_metrics(epoch, logs, phase="test")
 
+    def on_episode_end(
+        self,
+        episode: int,
+        logs: dict[str, Any] | None = None,
+    ) -> None:
+        """Log metrics after an RL episode."""
+        self._on_episode_end(episode, logs)
+
+    def _on_episode_end(
+        self,
+        episode: int,
+        logs: dict[str, Any] | None = None,
+    ) -> None:
+        step = int(logs.get("global_step", episode)) if logs else episode
+        self._log_metrics(step, logs)
+
+    def on_update_end(
+        self,
+        update: int,
+        logs: dict[str, Any] | None = None,
+    ) -> None:
+        """Log metrics after an RL algorithm update."""
+        self._on_update_end(update, logs)
+
+    def _on_update_end(
+        self,
+        update: int,
+        logs: dict[str, Any] | None = None,
+    ) -> None:
+        step = int(logs.get("global_step", update)) if logs else update
+        self._log_metrics(step, logs)
+
+    def on_evaluation_end(
+        self,
+        step: int,
+        logs: dict[str, Any] | None = None,
+    ) -> None:
+        """Log metrics after an RL evaluation group."""
+        self._on_evaluation_end(step, logs)
+
+    def _on_evaluation_end(
+        self,
+        step: int,
+        logs: dict[str, Any] | None = None,
+    ) -> None:
+        self._log_metrics(step, logs)
+
     def _log_metrics(
         self,
         epoch: int,

@@ -58,6 +58,7 @@ uv run dl-analyze --sweep experiments/lr_sweep.yaml
 ## What You Get
 
 - the `mlflow` callback for local training runs
+- epoch, RL episode, algorithm-update, and evaluation metric logging
 - `dl-init --with-mlflow` scaffold support
 - local `./mlruns` tracking defaults for generated experiment repositories
 - automatic upload of `epoch_<n>/`, `final/`, and `config.yaml` artifacts
