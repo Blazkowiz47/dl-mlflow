@@ -9,6 +9,16 @@ variant behind `deep-learning-core[mlflow]`.
 Current release: `deep-learning-mlflow==0.0.11`.
 Requires `deep-learning-core>=0.0.25,<0.1`.
 
+## What's New in 0.0.12?
+
+- RL training episodes, algorithm updates, and aggregate evaluations are logged
+  alongside the existing supervised epoch metrics
+- evaluation episodes remain separate from training-episode metric series
+- a tracking URI supplied through the top-level tracking configuration now
+  takes precedence over the callback fallback
+- generated repositories depend directly on `deep-learning-mlflow` and ignore
+  the local `mlruns/` directory
+
 ## Install
 
 Install from PyPI through the core extra:
