@@ -6,8 +6,8 @@ Local MLflow integration layer for `deep-learning-core`.
 `deep-learning-core` without Azure dependencies. It is the public MLflow
 variant behind `deep-learning-core[mlflow]`.
 
-Current release: `deep-learning-mlflow==0.0.11`.
-Requires `deep-learning-core>=0.0.25,<0.1`.
+Current release: `deep-learning-mlflow==0.0.12`.
+Requires `deep-learning-core>=0.0.26,<0.1`.
 
 ## What's New in 0.0.12?
 
