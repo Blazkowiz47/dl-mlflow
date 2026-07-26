@@ -19,6 +19,8 @@ Requires `deep-learning-core>=0.0.26,<0.1`.
 - generated repositories depend directly on `deep-learning-mlflow` and ignore
   the local `mlruns/` directory
 
+Previous versions are recorded in the [release history](RELEASES.md).
+
 ## Install
 
 Install from PyPI through the core extra:

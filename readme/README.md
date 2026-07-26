@@ -3,6 +3,7 @@
 Current public release: `deep-learning-mlflow==0.0.12`, requiring
 `deep-learning-core>=0.0.26,<0.1`.
 
+- [Release History](../RELEASES.md)
 - [`dl-core`](https://github.com/Blazkowiz47/dl-core)
 - [`dl-azure`](https://github.com/Blazkowiz47/dl-azure)
 - [`dl-wandb`](https://github.com/Blazkowiz47/dl-wandb)
