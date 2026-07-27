@@ -45,8 +45,5 @@ Issues = "https://github.com/Blazkowiz47/dl-mlflow/issues"
 [project.entry-points."dl_core.init_extensions"]
 mlflow = "dl_mlflow.init_extension:MlflowInitExtension"
 
-[tool.uv.sources]
-deep-learning-core = { path = "../dl-core", editable = true }
-
 [tool.hatch.build.targets.wheel]
 packages = ["src/dl_mlflow"]
