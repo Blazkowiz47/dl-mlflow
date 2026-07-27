@@ -318,14 +318,7 @@ class MlflowCallback(Callback):
         episode: int,
         logs: dict[str, Any] | None = None,
     ) -> None:
-        """Log metrics after an RL episode."""
-        self._on_episode_end(episode, logs)
-
-    def _on_episode_end(
-        self,
-        episode: int,
-        logs: dict[str, Any] | None = None,
-    ) -> None:
+        """Log one completed training episode."""
         if logs and logs.get("phase") == "evaluation":
             return
         step = int(logs.get("global_step", episode)) if logs else episode
@@ -336,14 +329,7 @@ class MlflowCallback(Callback):
         update: int,
         logs: dict[str, Any] | None = None,
     ) -> None:
-        """Log metrics after an RL algorithm update."""
-        self._on_update_end(update, logs)
-
-    def _on_update_end(
-        self,
-        update: int,
-        logs: dict[str, Any] | None = None,
-    ) -> None:
+        """Log one completed RL optimizer update."""
         step = int(logs.get("global_step", update)) if logs else update
         self._log_metrics(step, logs)
 
@@ -352,14 +338,7 @@ class MlflowCallback(Callback):
         step: int,
         logs: dict[str, Any] | None = None,
     ) -> None:
-        """Log metrics after an RL evaluation group."""
-        self._on_evaluation_end(step, logs)
-
-    def _on_evaluation_end(
-        self,
-        step: int,
-        logs: dict[str, Any] | None = None,
-    ) -> None:
+        """Log one aggregate RL evaluation."""
         self._log_metrics(step, logs)
 
     def _log_metrics(

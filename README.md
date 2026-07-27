@@ -6,18 +6,15 @@ Local MLflow integration layer for `deep-learning-core`.
 `deep-learning-core` without Azure dependencies. It is the public MLflow
 variant behind `deep-learning-core[mlflow]`.
 
-Current release: `deep-learning-mlflow==0.0.12`.
-Requires `deep-learning-core>=0.0.26,<0.1`.
+Current release: `deep-learning-mlflow==0.0.13`.
+Requires `deep-learning-core>=0.0.34,<0.1`.
 
-## What's New in 0.0.12?
+## What's New in 0.0.13?
 
-- RL training episodes, algorithm updates, and aggregate evaluations are logged
-  alongside the existing supervised epoch metrics
-- evaluation episodes remain separate from training-episode metric series
-- a tracking URI supplied through the top-level tracking configuration now
-  takes precedence over the callback fallback
-- generated repositories depend directly on `deep-learning-mlflow` and ignore
-  the local `mlruns/` directory
+- MLflow now implements the public RL callback hooks `on_episode_end()`,
+  `on_update_end()`, and `on_evaluation_end()`
+- custom callbacks can subclass the integration without relying on private
+  underscore methods
 
 Previous versions are recorded in the [release history](RELEASES.md).
 
