@@ -6,15 +6,15 @@ Local MLflow integration layer for `deep-learning-core`.
 `deep-learning-core` without Azure dependencies. It is the public MLflow
 variant behind `deep-learning-core[mlflow]`.
 
-Current release: `deep-learning-mlflow==0.0.13`.
-Requires `deep-learning-core>=0.0.34,<0.1`.
+Current release: `deep-learning-mlflow==0.0.14`.
+Requires `deep-learning-core>=0.0.35,<0.2`.
 
-## What's New in 0.0.13?
+## What's New in 0.0.14?
 
-- MLflow now implements the public RL callback hooks `on_episode_end()`,
-  `on_update_end()`, and `on_evaluation_end()`
-- custom callbacks can subclass the integration without relying on private
-  underscore methods
+- the supported core range now includes the architecture-free
+  `deep-learning-core==0.1.0` trainer and registry boundary
+- MLflow callbacks, trackers, metric sources, and scaffold behavior are
+  unchanged
 
 Previous versions are recorded in the [release history](RELEASES.md).
 
