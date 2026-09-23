@@ -73,6 +73,7 @@ uv run dl-analyze --sweep experiments/lr_sweep.yaml
 - `dl-init --with-mlflow` scaffold support
 - local `./mlruns` tracking defaults for generated experiment repositories
 - automatic upload of `epoch_<n>/`, `final/`, and `config.yaml` artifacts
+- runtime registration through dl-core's installed-extension entry points
 
 Azure-backed MLflow wiring remains part of `dl-azure`.
 

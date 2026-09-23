@@ -45,5 +45,8 @@ Issues = "https://github.com/Blazkowiz47/dl-mlflow/issues"
 [project.entry-points."dl_core.init_extensions"]
 mlflow = "dl_mlflow.init_extension:MlflowInitExtension"
 
+[project.entry-points."dl_core.runtime_extensions"]
+mlflow = "dl_mlflow"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/dl_mlflow"]
