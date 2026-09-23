@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+import yaml
 
 from dl_core.init_extensions import InitExtension, ScaffoldContext
 
@@ -36,18 +37,20 @@ def _mlflow_callback_block() -> str:
 
 
 def _inject_mlflow_tracking_fields(content: str) -> str:
-    """Inject MLflow-specific tracking fields into the sweep scaffold."""
-
-    if "tracking:\n" not in content:
+    """Set the local MLflow sweep backend without silently duplicating it."""
+    marker = "tracking:\n"
+    if content.count(marker) != 1:
+        raise ValueError("Expected one tracking block in configs/base_sweep.yaml")
+    tracking = (yaml.safe_load(content) or {}).get("tracking")
+    if not isinstance(tracking, dict):
+        raise ValueError("Expected a mapping at tracking in configs/base_sweep.yaml")
+    backend = tracking.get("backend")
+    if backend == "mlflow":
         return content
-
-    if "tracking:\n  backend: mlflow\n" in content:
-        return content
-
+    if backend is not None:
+        raise ValueError("Sweep tracking backend is already configured")
     return content.replace(
-        "tracking:\n",
-        "tracking:\n  backend: mlflow\n  tracking_uri: ./mlruns\n",
-        1,
+        marker, f"{marker}  backend: mlflow\n  tracking_uri: ./mlruns\n", 1
     )
 
 
@@ -55,6 +58,7 @@ class MlflowInitExtension(InitExtension):
     """Expose local MLflow scaffold wiring when dl-mlflow is installed."""
 
     name = "mlflow"
+    tracking_backend = "mlflow"
 
     def display_name(self) -> str:
         """Return the prompt label for MLflow support."""
@@ -98,12 +102,16 @@ class MlflowInitExtension(InitExtension):
             "Local MLflow support is enabled. Review the `callbacks.mlflow` "
             "block in `configs/base.yaml` before training."
         )
-        context.replace_in_file(
-            Path("configs") / "base.yaml",
-            "  metric_logger:\n    log_frequency: 1\n",
-            "  metric_logger:\n    log_frequency: 1\n"
-            f"{_mlflow_callback_block()}",
-        )
+        base_path = Path("configs") / "base.yaml"
+        if "  mlflow:\n" not in context.get_file(base_path):
+            if "  metric_logger:\n    log_frequency: 1\n" not in context.get_file(base_path):
+                raise ValueError("MLflow callback anchor not found in configs/base.yaml")
+            context.replace_in_file(
+                base_path,
+                "  metric_logger:\n    log_frequency: 1\n",
+                "  metric_logger:\n    log_frequency: 1\n"
+                f"{_mlflow_callback_block()}",
+            )
         context.replace_in_file(
             Path("configs") / "base_sweep.yaml",
             context.get_file(Path("configs") / "base_sweep.yaml"),
