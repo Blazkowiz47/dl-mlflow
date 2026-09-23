@@ -140,7 +140,7 @@ def test_mlflow_callback_prefers_tracking_values_over_callback_defaults(
 def test_mlflow_callback_logs_phase_metrics_with_epoch_steps(
     monkeypatch: MonkeyPatch,
 ) -> None:
-    """The callback should log phase metrics separately with 1-based epoch steps."""
+    """The callback should log phase metrics at the trainer's epoch steps."""
     metric_events: list[tuple[dict[str, float], int]] = []
 
     monkeypatch.setattr(
@@ -192,6 +192,30 @@ def test_mlflow_callback_logs_phase_metrics_with_epoch_steps(
         ({"sac/critic_loss": 0.2, "global_step": 21.0}, 21),
         ({"evaluation/mean_return": 5.0, "global_step": 21.0}, 21),
     ]
+
+
+def test_mlflow_callback_propagates_final_run_status(
+    monkeypatch: MonkeyPatch,
+) -> None:
+    """MLflow runs should retain completed, failed, and interrupted outcomes."""
+
+    statuses: list[str] = []
+    monkeypatch.setattr(
+        "dl_mlflow.callbacks.mlflow.mlflow",
+        SimpleNamespace(
+            end_run=lambda status: statuses.append(status),
+            log_artifact=lambda *_args, **_kwargs: None,
+            log_artifacts=lambda *_args, **_kwargs: None,
+        ),
+    )
+    callback = MlflowCallback()
+    callback.set_trainer(_DummyTrainer())
+
+    for run_status in ["completed", "failed", "interrupted"]:
+        callback.run = SimpleNamespace()
+        callback.on_training_finalized({"status": run_status})
+
+    assert statuses == ["FINISHED", "FAILED", "KILLED"]
 
 
 def test_mlflow_tracker_setup_sweep_creates_parent_run(

@@ -68,6 +68,8 @@ uv run dl-analyze --sweep experiments/lr_sweep.yaml
 
 - the `mlflow` callback for local training runs
 - epoch, RL episode, algorithm-update, and evaluation metric logging
+- terminal run statuses mapped from the trainer lifecycle: `FINISHED` for
+  completed runs, `FAILED` for failures, and `KILLED` for interruptions
 - `dl-init --with-mlflow` scaffold support
 - local `./mlruns` tracking defaults for generated experiment repositories
 - automatic upload of `epoch_<n>/`, `final/`, and `config.yaml` artifacts

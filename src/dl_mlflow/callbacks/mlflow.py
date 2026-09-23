@@ -397,13 +397,19 @@ class MlflowCallback(Callback):
             run_dir = Path(artifact_manager.run_dir)
             self._log_directory_if_exists(run_dir / "final", "final")
             self._log_artifact_if_exists(run_dir / "config.yaml", None)
+        run_status = (logs or {}).get("status", "completed")
+        mlflow_status = {
+            "completed": "FINISHED",
+            "failed": "FAILED",
+            "interrupted": "KILLED",
+        }.get(str(run_status), "FAILED")
         try:
-            mlflow.end_run()
+            mlflow.end_run(status=mlflow_status)
         finally:
             self.run = None
             if self.parent_run is not None:
                 try:
-                    mlflow.end_run()
+                    mlflow.end_run(status=mlflow_status)
                 finally:
                     self.parent_run = None
 
