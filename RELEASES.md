@@ -3,6 +3,19 @@
 The main README shows only the latest release. This page preserves the
 release-by-release changes.
 
+## 0.0.16
+
+- local sweep runs nest under the parent MLflow run, and invalid scalar
+  metrics are omitted from logging
+- runtime extensions register independently and scaffold tracking edits are
+  validated
+- requires `deep-learning-core>=0.1.8,<0.2`; development PyTorch requirement
+  is `torch>2.3` without an upper cap
+
+## 0.0.15
+
+- raised the core compatibility floor to `deep-learning-core>=0.1.4,<0.2`
+
 ## 0.0.14
 
 - the supported core range includes the architecture-free

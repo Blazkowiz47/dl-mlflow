@@ -6,15 +6,15 @@ Local MLflow integration layer for `deep-learning-core`.
 `deep-learning-core` without Azure dependencies. It is the public MLflow
 variant behind `deep-learning-core[mlflow]`.
 
-Current release: `deep-learning-mlflow==0.0.15`.
-Requires `deep-learning-core>=0.1.4,<0.2`.
+Current release: `deep-learning-mlflow==0.0.16`.
+Requires `deep-learning-core>=0.1.8,<0.2`.
 
-## What's New in 0.0.15?
+## What's New in 0.0.16?
 
-- the core compatibility floor is now `deep-learning-core>=0.1.4,<0.2`, keeping
-  MLflow installations aligned with the coordinated package release
-- MLflow callbacks, trackers, metric sources, and scaffold behavior remain
-  unchanged while new trainer and tar-dataset functionality comes from core
+- local MLflow sweep runs nest under their parent, and invalid scalar metrics
+  are omitted from logging
+- runtime extension registration and scaffold setup work with dl-core 0.1.8
+- the development PyTorch requirement is `torch>2.3` without an upper cap
 
 Previous versions are recorded in the [release history](RELEASES.md).
 

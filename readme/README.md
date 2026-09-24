@@ -1,14 +1,13 @@
 # dl-mlflow Docs
 
-Current public release: `deep-learning-mlflow==0.0.15`, requiring
-`deep-learning-core>=0.1.4,<0.2`.
+Current public release: `deep-learning-mlflow==0.0.16`, requiring
+`deep-learning-core>=0.1.8,<0.2`.
 
-## What's New in 0.0.15?
+## What's New in 0.0.16?
 
-- the package now requires the coordinated `deep-learning-core>=0.1.4,<0.2`
-  release
-- MLflow tracking and scaffold behavior remain stable; iteration training and
-  tar datasets are supplied by core
+- local sweep runs nest under their parent, and invalid scalar metrics are
+  omitted from MLflow logging
+- the package uses dl-core 0.1.8 for runtime extension registration
 
 - [Release History](../RELEASES.md)
 - [`dl-core`](https://github.com/Blazkowiz47/dl-core)

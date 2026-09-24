@@ -43,7 +43,7 @@ class _DummyTrainer:
 
 def test_mlflow_tracker_and_metrics_source_are_registered() -> None:
     """Importing dl-mlflow should register tracker and metrics source aliases."""
-    assert dl_mlflow.__version__ == "0.0.15"
+    assert dl_mlflow.__version__ == "0.0.16"
     assert TRACKER_REGISTRY.is_registered("mlflow")
     assert METRICS_SOURCE_REGISTRY.is_registered("mlflow")
 
